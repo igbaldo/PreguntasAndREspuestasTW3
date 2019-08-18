@@ -1,0 +1,153 @@
+﻿@model TPWebIII.Models.Pregunta
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_ProfesoresLayout.cshtml";
+}
+
+<script type="text/javascript" language="javascript">
+
+    $(document).ready(function() {
+        var cantidadRespuestas = @Model.RespuestaAlumno.Count();
+
+        if (parseInt(cantidadRespuestas) > 0) {
+            $("#lblErrorP").text("Ya se recibieron respuestas a esta pregunta, evite hacer modificaciones que puedan repercutir en las respuestas recibidas.");
+            ShowDivMessageP();
+        }
+
+        var mensajeError = "@TempData["messageERROR"]";
+
+        if (mensajeError.length > 0)
+            ShowDivMessageP();
+    });
+
+    function ShowDivMessageP() {
+        scroll(0, 0);
+        $("#divMessagesP").show("slow", function () { });
+    }
+
+    function HideDivMessageP() {
+        $("#divMessagesP").hide();
+    }
+
+    $(function () {
+        $("#FechaDisponibleDesde").datepicker();
+        $("#FechaDisponibleHasta").datepicker();
+    });
+</script>
+
+<br />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container">
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" id="panelHead">
+                            Preguntas
+                        </div>
+                        <div class="panel-body">
+                            <div>
+                                <div class="form-horizontal">
+                                    @{
+                                        var titulo = Model.IdPregunta == 0 ? "Crear Pregunta" : "Modificar Pregunta";
+                                    }
+                                    <h4>@titulo</h4>
+                                    <hr />
+                                    <div id="divMessagesP" class="ui-corner-all" style="display: none;">
+                                        <p align="left">
+                                            <div class="alert alert-danger">
+                                                <label id="lblErrorP" style="font-size: 12px; color: firebrick; font-weight: bold; margin-left: 5px;">@TempData["messageERROR"]</label>
+                                            </div>
+                                        </p>
+                                    </div>
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    @Html.HiddenFor(model => model.IdPregunta)
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(model => model.Nro, htmlAttributes: new { @class = "control-label col-md-4" }, labelText: "Nro.(*):")
+                                                <div class="col-md-8">
+                                                    @Html.EditorFor(model => model.Nro, new { htmlAttributes = new { @class = "form-control" } })
+                                                    @Html.ValidationMessageFor(model => model.Nro, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6"></div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(model => model.IdClase, htmlAttributes: new { @class = "control-label col-md-4" }, labelText: "Clase(*):")
+                                                <div class="col-md-8">
+                                                    @Html.DropDownList("IdClase", null, htmlAttributes: new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.IdClase, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(model => model.IdTema, htmlAttributes: new { @class = "control-label col-md-4" }, labelText: "Tema(*):")
+                                                <div class="col-md-8">
+                                                    @Html.DropDownList("IdTema", null, htmlAttributes: new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.IdTema, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(model => model.FechaDisponibleDesde, htmlAttributes: new { @class = "control-label col-md-4" }, labelText: "Disponible Desde:")
+                                                <div class="col-md-8">
+                                                    @Html.EditorFor(model => model.FechaDisponibleDesde, new { htmlAttributes = new { @class = "form-control", id = "FechaDisponibleDesde" } })
+                                                    @Html.ValidationMessageFor(model => model.FechaDisponibleDesde, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(model => model.FechaDisponibleHasta, htmlAttributes: new { @class = "control-label col-md-4" }, labelText: "Hasta:")
+                                                <div class="col-md-8">
+                                                    @Html.EditorFor(model => model.FechaDisponibleHasta, new { htmlAttributes = new { @class = "form-control", id = "FechaDisponibleHasta" } })
+                                                    @Html.ValidationMessageFor(model => model.FechaDisponibleHasta, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                @Html.LabelFor(model => model.Pregunta1, htmlAttributes: new { @class = "control-label col-md-2" }, labelText: "Pregunta:")
+                                                <div class="col-md-10">
+                                                    @Html.TextAreaFor(model => model.Pregunta1, new { @class = "textAreaWidth100 width80 respuestasTextArea", rows = "6" })
+                                                    @Html.ValidationMessageFor(model => model.Pregunta1, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4" align="center">
+                                            <input type="submit" value="Guardar" class="btn btn-warning" />
+                                            <input type="button" value="Volver" onclick="window.location.assign('@Url.Action("Preguntas", "Profesores")')" class="btn btn-danger" />
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,154 @@
+﻿@using TPWebIII.Helpers
+@using TPWebIII.Models
+@using TPWebIII.Models.WrapperEntities
+
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_AlumnosLayout.cshtml";
+}
+
+<br />
+<div class="container">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>¡Sube tus calificaciones!</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Contestando preguntas referidas a lo visto en clase, suma puntos cruciales para subir tus calificaciones al final de la cursada</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading" id="panelHead">
+                        Tabla de posiciones
+                    </div>
+                    <div class="panel-body panelHomeAlumnos">
+                        <table class="table">
+                            <thead class="">
+                                <tr>
+                                    <th scope="col" class="alignCenter">Pos</th>
+                                    <th scope="col" class="alignCenter">Alumno</th>
+                                    <th scope="col" class="alignCenter">Puntos</th>
+                                    <th scope="col" class="alignCenter">Respuestas Bien</th>
+                                    <th scope="col" class="alignCenter">Mejor Respuesta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                foreach (RankingAlumnoWrapper rankingAlumnoWrapper in ViewBag.Ranking)
+                                {
+                                    <tr>
+
+                                        @{
+                                        var classLogguedUser = rankingAlumnoWrapper.IdAlumno == UserCache.IdUsuario
+                                            ? "class=homeLoggedUser"
+                                            : string.Empty;
+                                        }
+
+                                        <td class="alignCenter"><span @classLogguedUser>@rankingAlumnoWrapper.Posicion.ToString()</span></td>
+                                        <td><span @classLogguedUser>@rankingAlumnoWrapper.Alumno</span></td>
+                                        <td class="alignCenter"><span @classLogguedUser>@rankingAlumnoWrapper.Puntos.ToString()</span></td>
+                                        <td class="alignCenter"><span @classLogguedUser>@rankingAlumnoWrapper.RespuestasBien.ToString()</span></td>
+                                        <td class="alignCenter"><span @classLogguedUser>@rankingAlumnoWrapper.MejorRespuesta.ToString()</span></td>
+                                    </tr>
+                            }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default panelHomeAlumnos">
+                    <div class="panel-heading">
+                        Preguntas última clase @ViewBag.UltimaClase
+                    </div>
+                    <div class="panel-body panelHomeAlumnos">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="heightPreguntaHome">
+                                    <h4>@ViewBag.UltimaPregunta.Pregunta</h4>
+                                </div>
+                                <br />
+                                <table>
+                                    @{
+                                        foreach (UltimaPreguntaHomeRankingWrapper ultimaPreguntaRankingWrapper in ViewBag.UltimaPregunta.RankingPregunta)
+                                        {
+                                            <tr>
+                                                <td>@ultimaPreguntaRankingWrapper.Alumno</td>
+                                                <td>+@ultimaPreguntaRankingWrapper.Puntos</td>
+                                                @{
+                                                    if (ultimaPreguntaRankingWrapper.MejorRespuesta)
+                                                    {
+                                                        <td><img src="~/Content/images/star.png" width="15px;" /></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                }
+                                            </tr>
+                                        }
+                                    }
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="heightPreguntaHome">
+                                    <h4>@ViewBag.PenultimaPregunta.Pregunta</h4>
+                                </div>
+                                <br />
+                                <table>
+                                    @{
+                                    foreach (UltimaPreguntaHomeRankingWrapper ultimaPreguntaRankingWrapper in ViewBag.PenultimaPregunta.RankingPregunta)
+                                    {
+                                        <tr>
+                                            <td>@ultimaPreguntaRankingWrapper.Alumno</td>
+                                            <td>+@ultimaPreguntaRankingWrapper.Puntos</td>
+                                            @{
+                                                if (ultimaPreguntaRankingWrapper.MejorRespuesta)
+                                                {
+                                                    <td><img src="~/Content/images/star.png" width="15px;" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                            }
+                                        </tr>
+                                    }
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading" id="panelHead">
+                        Preguntas sin responder
+                    </div>
+                    <div class="panel-body">
+                        <table>
+                            @{
+                                foreach (Pregunta preguntaSinResponder in ViewBag.PreguntasSinResponder)
+                                {
+                                    <tr>
+                                        <td><a href="@Url.Action("ResponderPregunta", "Alumnos", new { id = preguntaSinResponder.IdPregunta })">@string.Format("{0}. {1}", preguntaSinResponder.Nro, preguntaSinResponder.Pregunta1)</a></td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

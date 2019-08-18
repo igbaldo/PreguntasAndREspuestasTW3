@@ -1,0 +1,43 @@
+﻿@model TPWebIII.Models.WrapperEntities.LoginWrapper
+@{
+    ViewBag.Title = "Preguntas";
+    Layout = "~/Views/Shared/_BaseLayout.cshtml";
+}
+<div id="page-top">
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+            </div>
+            <div class="row" style="margin-top: 120px;">
+                @using (Html.BeginForm())
+                {
+                    <br/><br /><br />
+                    <div class="col-md-4 col-md-offset-4">
+                        <div class="login-panel panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Preguntas UNLaM - Ingreso</h3>
+                            </div>
+                            <div class="panel-body">
+                                @Html.ValidationSummary(true, "Email y/o Contraseña inválidos.")
+                                <form role="form">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <input class="form-control" placeholder="Usuario" name="Email" type="text" autofocus>
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control" placeholder="Password" name="Password" type="password" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.CheckBoxFor(x => x.Profesor)&nbsp;Soy Profesor
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-primary">Ingresar</button>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </header>
+</div>

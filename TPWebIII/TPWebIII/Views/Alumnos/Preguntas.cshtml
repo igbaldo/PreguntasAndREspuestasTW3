@@ -1,0 +1,88 @@
+﻿@using TPWebIII.Models.Enums
+@using TPWebIII.Models.WrapperEntities
+@model List<TPWebIII.Models.WrapperEntities.RespuestaWrapper>
+@{
+    ViewBag.Title = "Preguntas";
+    Layout = "~/Views/Shared/_AlumnosLayout.cshtml";
+}
+
+<br />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container">
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" id="panelHead">
+                            Preguntas
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5><span class="colorGrey">Recuerda que cuanto antes respondas correctamente, más chances tienes de sumar un mejor puntaje, y si tu respuesta es la más completa, recibirás un puntaje bonus!</span></h5>
+                                </div>
+                            </div>
+                            <br />
+                            @Html.ActionLink("Todas", "Preguntas", "Alumnos", new { estadoPreguntas = (int)EnumEstadoPreguntaFiltro.Todas }, null) |
+                            @Html.ActionLink("Sin Corregir", "Preguntas", "Alumnos", new { estadoPreguntas = (int)EnumEstadoPreguntaFiltro.SinCorregir }, null) |
+                            @Html.ActionLink("Correctas", "Preguntas", "Alumnos", new { estadoPreguntas = (int)EnumEstadoPreguntaFiltro.Correcta }, null) |
+                            @Html.ActionLink("Regular", "Preguntas", "Alumnos", new { estadoPreguntas = (int)EnumEstadoPreguntaFiltro.Regular }, null) |
+                            @Html.ActionLink("Mal", "Preguntas", "Alumnos", new { estadoPreguntas = (int)EnumEstadoPreguntaFiltro.Mal }, null)
+                            <br /><br />
+                            @{
+                                foreach (PreguntaWrapper pregunta in ViewBag.Preguntas)
+                                {
+                                    <div>
+                                        <div class="form-horizontal">
+                                            <span class="claseTema">@pregunta.Clase - @pregunta.Tema - </span><span class="responderHasta">Hasta: @pregunta.DisponibleHasta</span><br />
+                                            <span class="pregunta">@pregunta.Nro. @pregunta.Pregunta</span>
+                                            @{
+                                                if (pregunta.YaRespondida)
+                                                {
+                                                    <span class="fontBold">@Html.ActionLink("Ver", "VerRespuesta", "Alumnos", new { id = pregunta.IdPregunta }, null)</span>
+
+                                                    switch (pregunta.EstadoCorreccion)
+                                                    {
+                                                        case EnumEstadoPreguntaFiltro.Correcta:
+                                                            <span class="respuestaCorrecta">@pregunta.ResultadoCorreccion</span>
+                                                            break;
+                                                        case EnumEstadoPreguntaFiltro.Regular:
+                                                            <span class="respuestaRegular">@pregunta.ResultadoCorreccion</span>
+                                                            break;
+                                                        case EnumEstadoPreguntaFiltro.Mal:
+                                                            <span class="respuestaMal">@pregunta.ResultadoCorreccion</span>
+                                                            break;
+                                                        default:
+                                                            <span class="correccionPendiente">@pregunta.ResultadoCorreccion</span>
+                                                            break;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (pregunta.PlazoVencido)
+                                                    {
+                                                        <span class="respuestaMal">Plazo vencido @pregunta.DisponibleDesde - @pregunta.DisponibleHasta</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="fontBold">@Html.ActionLink("Responder", "ResponderPregunta", "Alumnos", new { id = pregunta.IdPregunta }, null)</span>
+                                                    }
+                                                }
+                                            }
+                                            <br />
+                                        </div>
+                                    </div>
+                                    <br />
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

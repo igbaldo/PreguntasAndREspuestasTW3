@@ -1,0 +1,92 @@
+﻿@using TPWebIII.Models.Enums
+@using TPWebIII.Models.WrapperEntities
+@model TPWebIII.Models.Pregunta
+@{
+    ViewBag.Title = "EvalRespuestas";
+    Layout = "~/Views/Shared/_ProfesoresLayout.cshtml";
+}
+
+<br />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="container">
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" id="panelHead">
+                            Respuestas
+                        </div>
+                        <div class="panel-body">
+                            @{
+                                <div>
+                                    <div class="form-horizontal">
+                                        <span class="claseTema">@Model.Clase.Nombre - @Model.Tema.Nombre - </span><span class="responderHasta">(@Model.FechaDisponibleDesde - @Model.FechaDisponibleHasta)</span><br />
+                                        <span class="pregunta">@Model.Nro. @Model.Pregunta1</span>
+                                        <br />
+                                    </div>
+                                </div>
+                            }
+                            <br />
+                            @Html.ActionLink("Todas", "EvalRespuestas", "Profesores", new { idPregunta = Model.IdPregunta, estadoPreguntas = (int)EnumEstadoPreguntaFiltro.Todas }, null) |
+                            @Html.ActionLink("Sin Corregir", "EvalRespuestas", "Profesores", new { idPregunta = Model.IdPregunta, estadoPreguntas = (int)EnumEstadoPreguntaFiltro.SinCorregir }, null) |
+                            @Html.ActionLink("Correctas", "EvalRespuestas", "Profesores", new { idPregunta = Model.IdPregunta, estadoPreguntas = (int)EnumEstadoPreguntaFiltro.Correcta }, null) |
+                            @Html.ActionLink("Regular", "EvalRespuestas", "Profesores", new { idPregunta = Model.IdPregunta, estadoPreguntas = (int)EnumEstadoPreguntaFiltro.Regular }, null) |
+                            @Html.ActionLink("Mal", "EvalRespuestas", "Profesores", new { idPregunta = Model.IdPregunta, estadoPreguntas = (int)EnumEstadoPreguntaFiltro.Mal }, null)
+                            <br /><br />
+                            @{
+                                bool hayMejorRespuesta = Model.RespuestaAlumno.Any(x => x.MejorRespuesta);
+
+                                foreach (RespuestaEvaluarWrapper respuestaEvaluar in ViewBag.Respuestas)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-3 centerCell fontBold">@respuestaEvaluar.FechaHoraRespuesta <br/> @respuestaEvaluar.Alumno</div>
+                                        <div class="col-md-5">@respuestaEvaluar.Respuesta</div>
+                                        <div class="col-md-4">
+                                            @{
+                                                if (respuestaEvaluar.EstadoCorreccion == null)
+                                                {
+                                                    <span>@Html.ActionLink("Correcta", "Evaluar", "Profesores", new { idPregunta = Model.IdPregunta, idRespuesta = respuestaEvaluar.IdRespuestaAlumno, idresultadoeval = (int)EnumEstadoPreguntaFiltro.Correcta }, new { @class="respuestaCorrecta" })</span>
+                                                    <span>@Html.ActionLink("Regular", "Evaluar", "Profesores", new { idPregunta = Model.IdPregunta, idRespuesta = respuestaEvaluar.IdRespuestaAlumno, idresultadoeval = (int)EnumEstadoPreguntaFiltro.Regular }, new { @class = "respuestaRegular" })</span>
+                                                    <span>@Html.ActionLink("Mal", "Evaluar", "Profesores", new { idPregunta = Model.IdPregunta, idRespuesta = respuestaEvaluar.IdRespuestaAlumno, idresultadoeval = (int)EnumEstadoPreguntaFiltro.Mal }, new { @class = "respuestaMal" })</span>
+                                                }
+                                                else
+                                                {
+                                                    switch (respuestaEvaluar.EstadoCorreccion)
+                                                    {
+                                                        case EnumEstadoPreguntaFiltro.Correcta:
+                                                            <span class="respuestaCorrecta">Correcta</span>
+                                                            if (!hayMejorRespuesta)
+                                                            {
+                                                                <span class="respuestaMejor">@Html.ActionLink("Marcar como mejor respuesta", "MejorRespuesta", "Profesores", new { idRespuesta = respuestaEvaluar.IdRespuestaAlumno }, null)</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                if (respuestaEvaluar.MejorRespuesta)
+                                                                {
+                                                                    <img src="~/Content/images/star.png" width="15px;" />
+                                                                }
+                                                            }
+                                                            break;
+                                                        case EnumEstadoPreguntaFiltro.Regular:
+                                                            <span class="respuestaRegular">Regular</span>
+                                                            break;
+                                                        case EnumEstadoPreguntaFiltro.Mal:
+                                                            <span class="respuestaMal">Mal</span>
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    <br/>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

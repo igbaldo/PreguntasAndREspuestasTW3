@@ -1,0 +1,23 @@
+﻿@using TPWebIII.Helpers
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Preguntas UNLaM", "HomeProfesores", "Profesores", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Home", "HomeProfesores", "Profesores")</li>
+                <li>@Html.ActionLink("Preguntas", "Preguntas", "Profesores")</li>
+                <li>@Html.ActionLink("Crear Pregunta", "PreguntasManager", "Profesores", new { id = 0 }, null)</li>
+                <li>@Html.ActionLink("Acerca de", "acerca-de", "Profesores")</li>
+                <li><a href="#">@UserCache.Username</a></li>
+                <li>@Html.ActionLink("Salir", "Salir", "Profesores")</li>
+            </ul>
+        </div>
+    </div>
+</div>

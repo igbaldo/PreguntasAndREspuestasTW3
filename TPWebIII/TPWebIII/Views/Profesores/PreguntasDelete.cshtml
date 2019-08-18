@@ -1,0 +1,128 @@
+﻿@model TPWebIII.Models.Pregunta
+
+@{
+    ViewBag.Title = "Eliminación Pregunta";
+    Layout = "~/Views/Shared/_ProfesoresLayout.cshtml";
+}
+
+<script type="text/javascript" language="javascript">
+
+    $(document).ready(function() {
+        var cantidadRespuestas = @Model.RespuestaAlumno.Count();
+
+        if (parseInt(cantidadRespuestas) > 0) {
+            $("#lblErrorP").text("No puede eliminarse una pregunta que ya posee una Respuesta.");
+            ShowDivMessageP();
+        }
+    });
+
+    function ShowDivMessageP() {
+        scroll(0, 0);
+        $("#divMessagesP").show("slow", function () { });
+    }
+
+    function HideDivMessageP() {
+        $("#divMessagesP").hide();
+    }
+</script>
+
+<div class="container">
+    <div id="page-wrapper">
+        <br/>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading" id="panelHead">
+                        Preguntas
+                    </div>
+                    <div class="panel-body">
+                        <div>
+                            <h3>¿Seguro que desea eliminar la siguiente pregunta?</h3>
+                            <div>
+                                <hr/>
+                                <div id="divMessagesP" class="ui-corner-all" style="display: none;">
+                                    <p align="left">
+                                        <div class="alert alert-danger">
+                                            <label id="lblErrorP" style="font-size: 12px; color: firebrick; font-weight: bold; margin-left: 5px;">@TempData["messageERROR"]</label>
+                                        </div>
+                                    </p>
+                                </div>
+                                <dl class="dl-horizontal">
+                                    <dt>
+                                        Nro.
+                                    </dt>
+
+                                    <dd>
+                                        @Html.DisplayFor(model => model.Nro)
+                                    </dd>
+
+                                    <dt>
+                                        Disponible desde:
+                                    </dt>
+
+                                    <dd>
+                                        @Html.DisplayFor(model => model.FechaDisponibleDesde)
+                                    </dd>
+
+                                    <dt>
+                                        Disponible Hasta:
+                                    </dt>
+
+                                    <dd>
+                                        @Html.DisplayFor(model => model.FechaDisponibleHasta)
+                                    </dd>
+
+                                    <dt>
+                                        Pregunta
+                                    </dt>
+
+                                    <dd>
+                                        @Html.DisplayFor(model => model.Pregunta1)
+                                    </dd>
+
+                                    <dt>
+                                        Clase
+                                    </dt>
+
+                                    <dd>
+                                        @Html.DisplayFor(model => model.Clase.Nombre)
+                                    </dd>
+
+                                    <dt>
+                                        Tema
+                                    </dt>
+
+                                    <dd>
+                                        @Html.DisplayFor(model => model.Tema.Nombre)
+                                    </dd>
+
+                                </dl>
+
+                                @using (Html.BeginForm())
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4">
+                                            @{
+                                                if (!Model.RespuestaAlumno.Any())
+                                                {
+                                                    <input type="submit" value="Eliminar" class="btn btn-danger"/>
+                                                }
+                                            }
+                                            <input type="button" value="Cancelar" onclick="window.location.assign('@Url.Action("Preguntas", "Profesores")')" class="btn btn-default"/>
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

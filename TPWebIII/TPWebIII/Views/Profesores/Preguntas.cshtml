@@ -1,0 +1,170 @@
+﻿@model IEnumerable<TPWebIII.Models.Pregunta>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_ProfesoresLayout.cshtml";
+}
+
+<script type="text/javascript" language="javascript">
+
+    function Create() {
+        window.location.assign("./PreguntasManager/0");
+    };
+
+    function Edit(id) {
+        window.location.assign("./PreguntasManager/" + id);
+    };
+
+    function Delete(id) {
+        window.location.assign("./PreguntasDelete/" + id);
+    };
+
+    function EvalRespuestas(id) {
+        window.location.assign("./EvalRespuestas?idPregunta=" + id + "&estadoPreguntas=-1");
+    };
+
+    $(window).bind('resize', function () {
+        $("#list").setGridWidth($("#panelHead").width());
+    }).trigger('resize');
+
+    $(document).ready(function () {
+
+        var myGrid = $('#list'),
+            decodeErrorMessage = function (jqXHR, textStatus, errorThrown) {
+                var html, errorInfo, i, errorText = textStatus + '\n' + errorThrown;
+                if (jqXHR.responseText.charAt(0) === '[') {
+                    try {
+                        errorInfo = $.parseJSON(jqXHR.responseText);
+                        errorText = "";
+                        for (i = 0; i < errorInfo.length; i++) {
+                            if (errorText.length !== 0) {
+                                errorText += "<hr/>";
+                            }
+                            errorText += errorInfo[i].Source + ": " + errorInfo[i].Message;
+                        }
+                    }
+                    catch (e) { }
+                } else {
+                    html = /<body.*?>([\s\S]*)<\/body>/i.exec(jqXHR.responseText);
+                    if (html !== null && html.length > 1) {
+                        errorText = html[1];
+                    }
+                }
+                return errorText;
+            };
+
+        try {
+
+            myGrid.jqGrid({
+                url: '@Url.Action("GetPreguntas", "Profesores")',
+                datatype: 'json',
+                mtype: 'POST',
+                colNames: ['IdPregunta', 'Nro.', 'Clase', 'Tema', 'Pregunta', 'Fecha Desde', 'Fecha Hasta', ''],
+                colModel: [
+                    { name: 'IdPregunta', index: 'IdPregunta', key: true, width: 90, align: 'center', sorttype: 'int', search: false, hidden: true },
+                    { name: 'Nro', index: 'Nro', width: 90, align: 'center', sorttype: 'int', search: false },
+                    { name: 'Clase', index: 'Clase', align: 'left', search: false },
+                    { name: 'Tema', index: 'Tema', align: 'left', search: false },
+                    { name: 'Pregunta', index: 'Pregunta', align: 'left', search: false },
+                    { name: 'FechaDesde', index: 'FechaDesde', align: 'center', search: false },
+                    { name: 'FechaHasta', index: 'FechaHasta', align: 'center', search: false },
+                    /*{
+                        name: 'EstadoAprobacion', index: 'EstadoAprobacion', align: 'center',
+                        stype: 'select', searchoptions: { sopt: ['cn'], value: ':;Pendiente:Pendientes;En Revisión:En Revisión;Aprobado:Aprobadas' }
+                    },*/
+                    { name: 'action', index: 'action', width: 70, align: 'center', sortable: false, search: false }
+                ],
+                pager: '#pager',
+                rowNum: 10,
+                rowList: [10, 20, 30],
+                sortname: 'nro',
+                sortorder: 'desc',
+                rownumbers: true,
+                viewrecords: true,
+                height: 'auto',
+                gridview: true,
+                loadonce: true,
+                jsonReader: { cell: "" },
+                caption: 'Preguntas',
+                loadError: function (jqXHR, textStatus, errorThrown) {
+                    // remove error div if exist
+                    $('#' + this.id + '_err').remove();
+                    // insert div with the error description before the grid
+                    myGrid.closest('div.ui-jqgrid').before(
+                        '<div id="' + this.id + '_err" style="max-width:' + this.style.width +
+                        ';"><div class="ui-state-error ui-corner-all" style="padding:0.7em;float:left;"><span class="ui-icon ui-icon-alert" style="float:left; margin-right: .3em;"></span><span style="clear:left">' +
+                        decodeErrorMessage(jqXHR, textStatus, errorThrown) + '</span></div><div style="clear:left"/></div>');
+                },
+                gridComplete: function () {
+                    var ids = myGrid.jqGrid('getDataIDs');
+                    for (var i = 0; i < ids.length; i++) {
+                        var rowId = ids[i];
+
+                        var checkOut = "<table><tr>";
+
+                        checkOut = checkOut + "<td title='Editar' class='ui-pg-button ui-corner-all ui-state-hover' style='border: 0px; cursor:pointer;'>" +
+                            "<span class='ui-icon ui-icon-pencil' onclick=\"Edit(" + rowId + ");\"></span></td>";
+
+                        checkOut = checkOut + "<td title='Eliminar' class='ui-pg-button ui-corner-all ui-state-hover' style='border: 0px; cursor:pointer;'>" +
+                            "<span class='ui-icon ui-icon-trash' onclick=\"Delete(" + rowId + ");\"></span></td>";
+
+                        checkOut = checkOut + "<td title='Evaluar' class='ui-pg-button ui-corner-all ui-state-hover' style='border: 0px; cursor:pointer;'>" +
+                            "<span class='ui-icon ui-icon-search' onclick=\"EvalRespuestas(" + rowId + ");\"></span></td>";
+                        
+                        checkOut = checkOut + "</tr></table>";
+                        myGrid.jqGrid('setRowData', rowId, { action: checkOut });
+                    }
+                }
+            });
+        }
+        catch (err) {
+            alert("Error:" + err.message);
+        }
+
+        myGrid.jqGrid('navGrid', '#pager', { add: false, edit: false, del: false },
+            {}, {}, {}, { multipleSearch: true, overlay: false, width: 480 });
+        myGrid.jqGrid('filterToolbar', { autosearch: true, stringResult: false, defaultSearch: 'cn' });
+        myGrid.jqGrid('navButtonAdd', '#pager',
+            {
+                caption: "Filtrar", title: "Mostrar/Ocultar barra de filtro",
+                buttonicon: 'ui-icon-pin-s',
+                onClickButton: function () { myGrid[0].toggleToolbar(); }
+            });
+        myGrid.jqGrid('navGrid', "#pager", { edit: false, add: false, del: false });
+
+        $("#list").setGridWidth($("#panelHead").width());
+    });
+</script>
+
+<br />
+<div class="container">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading" id="panelHead">
+                        Preguntas
+                    </div>
+                    <div id="divMessagesP" class="ui-state-highlight ui-corner-all" style="display: none;">
+                        <p align="left">
+                            <div class="alert alert-danger">
+                                <strong>Error!</strong><label id="lblErrorP" style="font-size: 12px; color: firebrick; font-weight: bold; margin-left: 5px;">@TempData["messageERROR"]</label>
+                            </div>
+                        </p>
+                    </div>
+                    <div class="panel-body">
+                        <p style="color: red; font-weight: 900;">@TempData["messageERROR"]</p>
+                        <div>
+                            <p>
+                                <button type="button" class="btn btn-warning" onclick="Create();">Nueva Pregunta</button>
+                            </p>
+                            <table id="list" class="scroll" cellpadding="0" cellspacing="0"></table>
+                            <div id="pager" class="scroll" style="text-align: center;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

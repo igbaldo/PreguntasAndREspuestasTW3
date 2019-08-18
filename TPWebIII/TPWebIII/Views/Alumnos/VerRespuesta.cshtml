@@ -1,0 +1,111 @@
+﻿@using TPWebIII.Models.Enums
+@model TPWebIII.Models.WrapperEntities.PreguntaWrapper
+
+@{
+    ViewBag.Title = "Respuesta";
+    Layout = "~/Views/Shared/_AlumnosLayout.cshtml";
+}
+
+<script type="text/javascript" language="javascript">
+
+    $(document).ready(function () {
+        var mensajeError = "@TempData["messageERROR"]";
+
+        if (mensajeError.length > 0) {
+            ShowDivMessageP();
+        }
+    });
+
+    function ShowDivMessageP() {
+        scroll(0, 0);
+        $("#divMessagesP").show("slow", function () { });
+    }
+
+    function HideDivMessageP() {
+        $("#divMessagesP").hide();
+    }
+</script>
+
+<br/>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container">
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" id="panelHead">
+                            Respuesta
+                        </div>
+                        <div class="panel-body">
+                            <div>
+                                <div class="form-horizontal">
+                                    <div id="divMessagesP" class="ui-corner-all" style="display: none;">
+                                        <p align="left">
+                                            <div class="alert alert-danger">
+                                                <label id="lblErrorP" style="font-size: 12px; color: firebrick; font-weight: bold; margin-left: 5px;">@TempData["messageERROR"]</label>
+                                            </div>
+                                        </p>
+                                    </div>
+                                    <span class="claseTema">@Model.Clase - @Model.Tema</span><br />
+                                    <span class="pregunta">@Model.Nro . @Model.Pregunta</span>
+                                    @{
+                                        if (Model.YaRespondida)
+                                        {
+                                            switch (Model.EstadoCorreccion)
+                                            {
+                                                case EnumEstadoPreguntaFiltro.Correcta:
+                                                    <span class="respuestaCorrecta pregunta">@Model.ResultadoCorreccion</span>
+                                                    break;
+                                                case EnumEstadoPreguntaFiltro.Regular:
+                                                    <span class="respuestaRegular pregunta">@Model.ResultadoCorreccion</span>
+                                                    break;
+                                                case EnumEstadoPreguntaFiltro.Mal:
+                                                    <span class="respuestaMal pregunta">@Model.ResultadoCorreccion</span>
+                                                    break;
+                                                default:
+                                                    <span class="correccionPendiente pregunta">@Model.ResultadoCorreccion</span>
+                                                    break;
+                                            }
+                                            
+                                        }
+                                        else
+                                        {
+                                            if (Model.PlazoVencido)
+                                            {
+                                                <span class="respuestaMal pregunta">Plazo vencido @Model.DisponibleDesde - @Model.DisponibleHasta</span>
+                                            }
+                                        }
+                                    }
+                                    <br />
+                                    <span class="responderHasta">Se puede responder hasta: @Model.DisponibleHasta</span><br />
+                                    @Html.HiddenFor(model => model.IdPregunta)
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    @Html.TextAreaFor(model => model.Respuesta, new { @class = "textAreaWidth100 respuestasTextArea", rows = "6" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4" align="center">
+                                            <input type="button" value="Volver" onclick="window.location.assign('@Url.Action("Preguntas", "Alumnos", new { estadoPreguntas = (int)EnumEstadoPreguntaFiltro.Todas }, null)')" class="btn btn-danger" />
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,141 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.respuestasTextArea {
+    max-width: 100%;
+    resize: none;
+}
+
+.width100 {
+    max-width: 93%;
+    height: 80px;
+    padding-top: 0px;
+    vertical-align: top;
+}
+
+.width80 {
+    max-width: 94%;
+    height: 80px;
+    padding-top: 0px;
+    vertical-align: top;
+}
+
+.height100 {
+    height: 200px;
+}
+
+.homeLoggedUser {
+    font-weight: bold;
+}
+
+.textAreaWidth100 {
+    display: block;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.claseTema {
+    margin-left: 50px;
+    font-weight: bold;
+}
+
+.pregunta {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.responderHasta {
+    font-weight: bold;
+    color: grey;
+    font-size: 10px;
+}
+
+.colorGrey {
+    color: grey;
+}
+
+.fontBold {
+    font-weight: bold;
+}
+
+.alignCenter {
+    text-align: center;
+}
+
+.correccionPendiente {
+    font-weight: bold;
+    color: dimgrey;
+}
+
+.respuestaCorrecta {
+    font-weight: bold;
+    color: green;
+}
+
+.respuestaRegular {
+    font-weight: bold;
+    color: orange;
+}
+
+.respuestaMal {
+    font-weight: bold;
+    color: red;
+}
+
+.respuestaMejor {
+    font-weight: bold;
+    color: lightseagreen;
+}
+
+.heightPreguntaHome {
+    min-height: 100px;
+}
+
+.panelHomeAlumnos{
+    min-height: 550px;
+}
+
+.centerCell {
+    text-align: center;
+}
+
+img.bg {
+    min-height: 100%;
+    min-width: 1024px;
+    width: 100%;
+    height: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+@media screen and (max-width: 1024px){
+    img.bg {
+        left: 50%;
+        margin-left: -512px; }
+}
+
